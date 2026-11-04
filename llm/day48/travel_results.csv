@@ -1,0 +1,25 @@
+﻿setting,answer,tokens,seconds,token_per_sec
+top_k_10,"One-day walking itinerary in Kyoto:
+
+Day 1: Visit the Kinkaku-ji Temple, the oldest Buddhist temple in Japan.
+Day 2: Explore the Kiyomizu-dera Temple, a UNESCO World Heritage site.
+Day 3: Visit the Fushimi Inari Shrine, famous for its thousands of vermillion torii gates and the famous innari festival.",86,3.479,24.716
+top_k_50,"One-day walking itinerary in Kyoto:
+
+Day 1: Visit the Kinkaku-ji Temple, the oldest Buddhist temple in Japan.
+Day 2: Explore the Kiyomizu-dera Temple, a UNESCO World Heritage site.
+Day 3: Visit the Fushimi Inari Shrine, famous for its thousands of vermillion torii gates and the famous innari festival.",86,3.668,23.448
+top_p_075,"In Kyoto, a one-day walking itinerary is a delightful way to explore the city's many temples and gardens. Here's a suggested itinerary:
+
+1. Visit the Fushimi Inari Shrine, famous for its thousands of vermilion torii gates, which symbolize gates to heaven.
+2. Take a stroll through the serene Arashiyama Bamboo Grove, a tranquil oasis in the heart of Kyoto.
+3. Explore the beautiful Kiyomizu-dera Temple, a UNESCO World Heritage site, and the serene Arashiyama Bamboo Grove.
+
+This itinerary offers a mix of historical and cultural experiences, making it a perfect way to experience Kyoto's unique atmosphere.",147,6.992,21.025
+top_p_095,"One-day walking itinerary in Kyoto:
+
+Day 1: Visit the Kinkaku-ji Temple, the oldest Buddhist temple in Japan.
+Day 2: Explore the Kiyomizu-dera Temple, a UNESCO World Heritage site.
+Day 3: Visit the Fushimi Inari Shrine, famous for its thousands of vermillion torii gates.
+
+This itinerary provides a mix of history, culture, and outdoor activities, making it a great choice for a one-day walk in Kyoto.",111,5.308,20.912

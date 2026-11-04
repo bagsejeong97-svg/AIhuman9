@@ -1,0 +1,30 @@
+[
+  {
+    "role": "system",
+    "content": "도서관 안내 도우미입니다."
+  },
+  {
+    "role": "user",
+    "content": "열람실은 어디인가요?"
+  },
+  {
+    "role": "assistant",
+    "content": "본관 3층입니다."
+  },
+  {
+    "role": "user",
+    "content": "반납함은 어디인가요?"
+  },
+  {
+    "role": "assistant",
+    "content": "1층 출입구입니다."
+  },
+  {
+    "role": "user",
+    "content": "주말도 운영하나요?"
+  },
+  {
+    "role": "assistant",
+    "content": "운영시간을 확인하세요."
+  }
+]

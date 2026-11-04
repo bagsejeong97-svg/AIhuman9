@@ -1,0 +1,29 @@
+-- INSERT SQL
+INSERT INTO SPEAKERS (NAME, LANGUAGE, SAMPLE_COUNT)
+VALUES(%s,%s,%s)
+RETURNING ID; --등록 후 ID를 리턴
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

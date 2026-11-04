@@ -1,0 +1,7 @@
+UPDATE VOICE_DATA
+SET TRANSCRIPT = %s, LANGUAGE = %s
+WHERE ID = %s
+
+
+
+

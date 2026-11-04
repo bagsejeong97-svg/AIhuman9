@@ -1,0 +1,59 @@
+﻿AI휴먼 데일리 딥러닝 미니프로젝트 - Team 2
+=======================================================
+
+[프로젝트]
+배송 소요시간 예측
+
+[문제 유형]
+회귀
+
+[핵심 모델]
+Dense
+
+[프로젝트 설명]
+일반 표형 배송 데이터를 Dense 회귀 모델로 학습하고 Batch Size와 EarlyStopping의 영향을 확인합니다.
+
+[이번 프로젝트에서 반드시 확인할 개념]
+- Dense 회귀 모델과 Linear 출력층 구성
+- MSE 손실 함수 사용
+- batch_size 16과 64 비교
+- History의 train loss와 validation loss 비교
+- MAE/RMSE로 최종 예측 오차 해석
+
+[데이터]
+- 파일명: team2_data.csv
+- 수업용으로 생성한 가상 데이터입니다.
+- 실제 개인정보나 민감 데이터를 포함하지 않습니다.
+- 외부 다운로드 없이 바로 실습할 수 있습니다.
+
+[필수 작업]
+1. CSV를 읽고 데이터 크기, 자료형, 결측치를 확인합니다.
+2. 숫자형 결측치를 중앙값으로 처리합니다.
+3. X와 y를 분리하고 Train/Test를 75:25로 나눕니다.
+4. StandardScaler를 Training Set 기준으로 적용합니다.
+5. Dense 회귀 모델을 구성합니다.
+6. 출력층은 Dense(1) 또는 activation="linear"로 구성합니다.
+7. optimizer는 Adam, loss는 mse를 사용합니다.
+8. 같은 모델을 batch_size=16과 batch_size=64로 각각 학습합니다.
+9. 두 실험 모두 EarlyStopping을 사용합니다.
+10. MAE, RMSE, 학습시간, 실제 수행 Epoch 수를 비교합니다.
+
+[보고서]
+`team2_report_template.md` 파일을 복사하여 결과를 작성하세요.
+
+[필수 시각화]
+- 학습곡선: train loss / validation loss
+- 문제 유형에 맞는 성능 시각화
+- 데이터 또는 예측 결과를 설명할 수 있는 그래프 1개 이상
+
+[시간이 부족할 때]
+1순위: 데이터 shape 이해
+2순위: 모델 구성과 학습
+3순위: EarlyStopping + History 확인
+4순위: 최종 성능과 그래프
+5순위: 보고서 결론 작성
+
+[주의]
+- Test Set을 반복적으로 보면서 모델을 수정하지 않습니다.
+- StandardScaler를 사용할 때는 Training Set에만 fit합니다.
+- 모델 이름보다 데이터 shape와 문제 유형에 맞는 구조를 선택하는 것이 중요합니다.

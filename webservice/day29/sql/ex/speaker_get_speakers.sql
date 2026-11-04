@@ -1,0 +1,27 @@
+-- 전체 조회
+SELECT ID,NAME,LANGUAGE,SAMPLE_COUNT
+FROM SPEAKERS
+ORDER BY ID DESC --ID 내림차순 정렬
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

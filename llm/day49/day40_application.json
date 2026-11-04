@@ -1,0 +1,22 @@
+[
+  {
+    "role": "system",
+    "content": "쇼핑몰 고객지원 센터 입니다."
+  },
+  {
+    "role": "user",
+    "content": "교환 절차는요?"
+  },
+  {
+    "role": "assistant",
+    "content": "교환 신청 메뉴를 이용하세요."
+  },
+  {
+    "role": "user",
+    "content": "환불은 어떻게 하나요?"
+  },
+  {
+    "role": "assistant",
+    "content": "환불 규정을 확인하세요."
+  }
+]

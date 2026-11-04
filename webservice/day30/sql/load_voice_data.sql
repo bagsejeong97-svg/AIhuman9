@@ -1,0 +1,13 @@
+SELECT ID, SPEAKER, TRANSCRIPT, LANGUAGE, FILE_NAME,CREATED_AT
+FROM VOICE_DATA
+WHERE SPEAKER ILIKE %s --대소문자 구별없이 문자열을 포함한다는 조건
+-- 2차 정렬(등록일시 내림차순 정렬 후, 같은 등록일시에는 ID로 내림차순 정렬)
+ORDER BY CREATED_AT DESC,ID DESC
+
+
+
+
+
+
+
+

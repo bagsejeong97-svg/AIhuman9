@@ -1,0 +1,58 @@
+# .streamlit/config.toml
+
+
+# ============================================
+# 1. 서버 설정
+# ============================================
+
+[server]
+
+# Streamlit 서버 포트
+port = 8501
+
+# 외부에서 접속 가능하도록 설정
+address = "0.0.0.0"
+
+# 파일이 변경되었을 때 자동으로 감지
+fileWatcherType = "auto"
+
+# 업로드 가능한 파일 최대 크기(MB)
+maxUploadSize = 200
+
+# WebSocket 메시지 최대 크기(MB)
+maxMessageSize = 200
+
+
+# ============================================
+# 2. 브라우저 설정
+# ============================================
+
+[browser]
+
+# Streamlit 사용 통계 전송 여부
+gatherUsageStats = false
+
+
+# ============================================
+# 3. 화면 테마
+# ============================================
+
+[theme]
+
+# "light" 또는 "dark"
+base = "light"
+
+# 주요 강조 색상
+primaryColor = "#FF4B4B"
+
+# 전체 배경색
+backgroundColor = "#FFFFFF"
+
+# 사이드바/입력영역 등의 보조 배경색
+secondaryBackgroundColor = "#F0F2F6"
+
+# 기본 글자색
+textColor = "#262730"
+
+# 기본 폰트
+font = "sans-serif"

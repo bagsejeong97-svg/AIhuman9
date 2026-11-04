@@ -1,0 +1,3 @@
+UPDATE BOOKS
+SET STOCK = %s
+WHERE ID = %s

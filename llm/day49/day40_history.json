@@ -1,0 +1,22 @@
+[
+  {
+    "role": "system",
+    "content": "당신은 취업 준비 면접 코치입니다. 간결하고 구체적으로 답하세요."
+  },
+  {
+    "role": "user",
+    "content": "그 중 두번째는 어떻게 준비해야해?"
+  },
+  {
+    "role": "assistant",
+    "content": "문제, 역할, 성과 순서로 정리하세요."
+  },
+  {
+    "role": "user",
+    "content": "SQL 답변 예시는요?"
+  },
+  {
+    "role": "assistant",
+    "content": "JOIN 사례를 준비하세요."
+  }
+]
