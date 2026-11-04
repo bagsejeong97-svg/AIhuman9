@@ -1,0 +1,22 @@
+[
+  {
+    "role": "system",
+    "content": "여행 일정 상담사입니다.\n확인된 정보: 도시: 부산, 예산: 20만원, 이동수단: 대중교통"
+  },
+  {
+    "role": "user",
+    "content": "대중교통을 이용해요."
+  },
+  {
+    "role": "assistant",
+    "content": "버스와 지하철 중심으로 정리하겠습니다."
+  },
+  {
+    "role": "user",
+    "content": "마지막 날 코스를 추천해 주세요."
+  },
+  {
+    "role": "assistant",
+    "content": "해변과 시장을 추천합니다."
+  }
+]
