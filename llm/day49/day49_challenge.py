@@ -79,7 +79,7 @@ def main():
     pp("Assertion 검증 통과: 핵심 사실이 잘 보존되었습니다.")
 
     # 5. JSON 저장 (개인정보 제외)
-    file_path = ROOT / 'travel_history.json'
+    file_path = ROOT / 'day49_travel_history.json'
     text = json.dumps(recent, ensure_ascii=False, indent=2)
     Path(file_path).write_text(text, encoding='utf-8')
     pp(f"저장 완료: {file_path}")

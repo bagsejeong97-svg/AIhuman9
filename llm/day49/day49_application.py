@@ -73,13 +73,13 @@ def main():
     ]
 
 
-    for answer,question in pairs:
-        history = add_history(history,answer,question)
+    for question,answer in pairs:
+        history = add_history(history,question,answer)
 
 
     recent = recent_turn(history,max_turns = 2)
 
-    file_path = ROOT / 'day40_application.json'
+    file_path = ROOT / 'day49_application.json'
     save_json(recent, file_path)
 
     pp(f'저장완료: {file_path}')

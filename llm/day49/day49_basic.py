@@ -30,10 +30,10 @@ def make_library_history():
     return [{"role": "system", "content": "도서관 안내 도우미입니다."}]
 
 
-def append_pair(history,answer,question):
+def append_pair(history,question,answer):
     result = list(history)
-    result.append({'role': 'user', 'content': answer})
-    result.append({'role': 'assistant', 'content': question})
+    result.append({'role': 'user', 'content': question})
+    result.append({'role': 'assistant', 'content': answer})
     validate_messages(result)
     return result
 
@@ -60,7 +60,7 @@ def main():
     validate_messages(history)
 
 
-    file_path = ROOT / 'day40_basic.json'
+    file_path = ROOT / 'day49_basic.json'
     save_json(history, file_path)
 
     pp(f'저장 : {file_path}')

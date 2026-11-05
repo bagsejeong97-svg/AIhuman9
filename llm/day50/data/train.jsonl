@@ -1,0 +1,8 @@
+{"instruction": "고객 문의를 분류하세요", "input": "배송이 이틀 늦었어요", "output": "배송"}
+{"instruction": "고객 문의를 분류하세요", "input": "환불받고 싶어요", "output": "환불"}
+{"instruction": "고객 문의를 분류하세요", "input": "다른 색상이 왔어요", "output": "교환"}
+{"instruction": "고객 문의를 분류하세요", "input": "택배 조회가 안 됩니다", "output": "배송"}
+{"instruction": "고객 문의를 분류하세요", "input": "결제 취소해주세요", "output": "환불"}
+{"instruction": "고객 문의를 분류하세요", "input": "상품 크기가 달라요", "output": "교환"}
+{"instruction": "고객 문의를 분류하세요", "input": "택배를 못 받았어요", "output": "배송"}
+{"instruction": "고객 문의를 분류하세요", "input": "반품 처리해 주세요", "output": "환불"}

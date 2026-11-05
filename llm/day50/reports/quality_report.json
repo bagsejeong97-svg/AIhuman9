@@ -1,0 +1,36 @@
+{
+  "original_count": 10,
+  "accepted_count": 8,
+  "rejected_count": 2,
+  "parameter_comparison": [
+    {
+      "rank": 4,
+      "full": 16777216,
+      "lora": 32768,
+      "percent": 0.2
+    },
+    {
+      "rank": 8,
+      "full": 16777216,
+      "lora": 65536,
+      "percent": 0.39
+    },
+    {
+      "rank": 16,
+      "full": 16777216,
+      "lora": 131072,
+      "percent": 0.78
+    }
+  ],
+  "base_output": [
+    2,
+    3,
+    4
+  ],
+  "accepted_output": [
+    2,
+    5,
+    4
+  ],
+  "note": "파라미터 수 비교와 가상 보정에 대한 시연임, 실제 학습은 아님"
+}
