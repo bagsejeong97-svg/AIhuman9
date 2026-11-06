@@ -1,0 +1,9 @@
+{"instruction": "채용 공고에서 직무, 지역, 경력을 JSON으로 추출하세요", "input": "서울 백엔드 개발자 신입 채용", "output": "{\"job\": \"백엔드 개발자\", \"region\": \"서울\", \"experience\": \"신입\"}"}
+{"instruction": "채용 공고에서 직무, 지역, 경력을 JSON으로 추출하세요", "input": "부산 데이터 분석가 경력 3년 이상", "output": "{\"job\": \"데이터 분석가\", \"region\": \"부산\", \"experience\": \"경력\"}"}
+{"instruction": "채용 공고에서 직무, 지역, 경력을 JSON으로 추출하세요", "input": "대전 AI 엔지니어 경력 무관 채용", "output": "{\"job\": \"AI 엔지니어\", \"region\": \"대전\", \"experience\": \"경력 무관\"}"}
+{"instruction": "채용 공고에서 직무, 지역, 경력을 JSON으로 추출하세요", "input": "대구 프론트엔드 개발자 신입 모집", "output": "{\"job\": \"프론트엔드 개발자\", \"region\": \"대구\", \"experience\": \"신입\"}"}
+{"instruction": "채용 공고에서 직무, 지역, 경력을 JSON으로 추출하세요", "input": "인천 QA 엔지니어 경력 채용", "output": "{\"job\": \"QA 엔지니어\", \"region\": \"인천\", \"experience\": \"경력\"}"}
+{"instruction": "채용 공고에서 직무, 지역, 경력을 JSON으로 추출하세요", "input": "서울 데이터 분석가 신입 공고", "output": "{\"job\": \"데이터 분석가\", \"region\": \"서울\", \"experience\": \"신입\"}"}
+{"instruction": "채용 공고에서 직무, 지역, 경력을 JSON으로 추출하세요", "input": "대전 백엔드 개발자 경력자 채용", "output": "{\"job\": \"백엔드 개발자\", \"region\": \"대전\", \"experience\": \"경력\"}"}
+{"instruction": "채용 공고에서 직무, 지역, 경력을 JSON으로 추출하세요", "input": "부산 QA 엔지니어 경력 무관", "output": "{\"job\": \"QA 엔지니어\", \"region\": \"부산\", \"experience\": \"경력 무관\"}"}
+{"instruction": "채용 공고에서 직무, 지역, 경력을 JSON으로 추출하세요", "input": "인천 AI 엔지니어 신입 모집", "output": "{\"job\": \"AI 엔지니어\", \"region\": \"인천\", \"experience\": \"신입\"}"}

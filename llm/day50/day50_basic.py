@@ -22,8 +22,8 @@ RAW = [
     ("중앙도서관 열람실 운영 시간을 연장합니다", "시설"),
     ("체육관 바닥 보수로 이용이 제한됩니다", "시설"),
     ("학생회관 출입문 공사를 진행합니다", "시설"),
-    ("오늘 프로그래밍 강의실이 301호로 변경되었습니다", "수업"),  # 중복 데이터
-    ("다음 학기 장학 심사 안내", " "),  # 빈 정답 데이터
+    ("오늘 프로그래밍 강의실이 301호로 변경되었습니다", "수업"),
+    ("다음 학기 장학 심사 안내", " "),
 ]
 
 # SAMPLES 구성
@@ -37,8 +37,8 @@ def validate_record(item):
     for field in ('instruction', 'input', 'output'):
         if field not in item or not isinstance(item[field], str):
             return False, f'{field} 누락 또는 문자열 형식 오류'
-    if not item['instruction'].strip():
-        return False, '지시가 비어있음'
+    if not item['instruction'].strip() or not item['input'].strip():
+        return False, '지시나 공지가 비어있음'
     if not item['output'].strip():
         return False, '정답이 비어 있음'
     if item['output'] not in CATEGORIES:
@@ -48,7 +48,7 @@ def validate_record(item):
 
 # 2. 공백 정리 및 중복·오류 데이터 제거 함수
 def clean_records(records):
-    accepted, rejected, seen = [], [], set()
+    accepted, rejected, seen = [], [], set() # 정상, 비정상, 유일한 값
     for row_number, item in enumerate(records, start=1):
         valid, reason = validate_record(item)
         if not valid:
@@ -110,6 +110,8 @@ def main():
     pp('정상 데이터 건수:', len(accepted))
     pp('제외 데이터 건수:', len(rejected))
     pp('카테고리별 건수:', category_counts)
+    pp('제외 사유 : ', rejected)
+
 
     for issue in rejected:
         pp(f"제외 행: {issue['row']}, 사유: {issue['reason']}")

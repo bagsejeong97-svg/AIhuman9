@@ -1,0 +1,34 @@
+{
+  "original": 17,
+  "accepted": 15,
+  "rejected": [
+    {
+      "row": 16,
+      "reason": "중복 이벤트"
+    },
+    {
+      "row": 17,
+      "reason": "입력/정답 오류"
+    }
+  ],
+  "train": 11,
+  "test": 4,
+  "test_accuracy": 0.75,
+  "train_label_counts": {
+    "높음": 3,
+    "보통": 4,
+    "낮음": 4
+  },
+  "test_label_counts": {
+    "높음": 2,
+    "보통": 1,
+    "낮음": 1
+  },
+  "misclassified": [
+    {
+      "input": "서버에서 대량의 파일이 암호화된 정황 확인",
+      "expected": "높음",
+      "predicted": "낮음"
+    }
+  ]
+}
