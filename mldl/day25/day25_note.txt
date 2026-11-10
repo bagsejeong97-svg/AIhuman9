@@ -1,0 +1,308 @@
+# dat25_note.txt
+# CNN,RNN,LSTM 개념 정리
+
+# 데이터 형태
+
+1. 표형 데이터 : 행(데이터 수),열(특성 수)
+-shape :(samples, features), 2차원 데이터
+-예) 고객 1000명, 고객마다 특성 10개
+     엑셀의 직원 한 행. 행 순서를 바꿔도 직원 자체의 의미는 유지됨
+
+2. 이미지 데이터 : 이미지 수(데이터 수), 높이 픽셀 수, 넓이 픽셀 수, 채널 수
+- shape: (samples, height, width, channels), 4차원 데이터
+- 예) 이미지 1000장, 높이 28픽셀, 넓이 28픽셀, 흑백 1채널(RGB:3채널, CMYK:4채널)
+      사진에서 눈/코/입의 위치가 바뀌면 의미가 달라짐. 데이터의 위치(공간적 특성)가 매우 중요
+
+3. 순차 데이터 : 데이터 수, 시점 수, 특성 수
+- shape: (samples, timesteps, features), 3차원 데이터
+- 예) 센서 데이터 500개, 20개의 시점, 시점 당 특성 3개
+      월>화>수 순서와 수>화>월 순서는 같은 값들이지만 의미가 다름. 순서(시간적 특성)가 중요.
+
+# CNN ( Convolutional neural network: 합성곱 신경망)
+
+- 작은 필터(filter 또는 kernel)를 이미지 위에서 움직이며 지역적인 특징을 찾는 신경망
+- 얕은 층: 선, 경계, 방향처럼 단순한 특징 검출
+- 깊은 충: 모양, 부품, 객체처럼 복잡한 특징 검출
+- 예) 공장에서 제품 표면을 검사할 떄 제품 전체를 한번에 보는 대신
+      돋보기를 조금씩 움직이면서 긁힘/금/얼룩 등을 찾는다고 생각
+      kernel이 돋보기 역할
+
+# Convolution / kernel / Feature Map
+
+- Convolution(합성곱): 입력의 작은 영역과 필터를 곱하고 합산해 특징값을 계산하는 연산 (행렬곱셈)
+- Kernel / Filter : 특징값을 찾는 작은 가중치 행렬
+- Feature Map (특성맵) : 필터를 이미지 전체에 적용한 결과 지도
+- 예) Kernel을 작은 도장이라고 생각하면 사진 위에서 도장을 한 칸씩 옮기며 찍고
+      도장 무늬와 비슷한 곳일수로 큰 점수가 나옴. 그 점수를 모아 만든 지도가 Feature Map
+
+# Stride : 필터가 이동하는 간격
+- 예) stride=1 => 한칸씩 꼼꼼히 이동 => 더많은 위치 검사 => 계산량 증가
+      stride=2 => 두칸씩 이동 > 검사 위치 감소 > 출력 크기도 더 빨리 감소 ( 계산량 감소)
+
+
+# Padding: 안쪽 여백
+- 사진 가장자리에도 커널을 적용하기 위해 바깥 테두리에 붙이는 임시 여백
+- padding='valid' : 여백 사용 안함. 유효한 위치만 계산. 출력 크기가 줄어듬
+- padding='same' : 모든 부분을 계산하기 위해 가장자리에 여백을 부여. stride가 1일때 높이/ 너비 유지
+- 출력 크기 = 커널이 들어갈 수 있는 시작 위치의 개수 = (입력 크기 - 커널 크기) / stride + 1
+- 예) 액자에서 사진 가장자리까지 3X3 도장을 찍으려면 도장이 사진 밖으로 나감
+      사진 주변에 여백을 붙이면 가장자리도 검사할 수 있음. 이떄의 여백이 padding
+- 28X28 입력 시의 커널 크기, 패딩, 출력 크기
+             3X3, valid, 26X26 (여백 없음 , 출력크기 작아짐)
+             3X3, same, 28X28  (여백 있음, 출력크기 유지)
+
+# Conv2D : 2차원 합성곱 연산용 클래스의 주요 파라미터
+
+- filters : 생성할 필터(특징 맵) 개수 (예 : 16,32,64 ...)
+- kernel_size : 필터 크기 (예: 3 > 3X3)  # 필터는 정사각형
+- strides : 이동간격
+- padding : 추가 여뱍
+- activation : 활성화 함수. 일반적으로 'relu' 사용
+
+# MaxPooling :
+
+- Pooling : Feature Map의 공간 크기를 줄이는 연산, 강한 특징만 요약해서 작은 지도로 만드는 것
+            일부 세부 정보는 줄어들지만 강한 특징을 남기면서 계산량을 줄이고 (추상화)
+            작은 위치 변화에 덜 민감하게 만들기 위함
+- Max Pooling: 지정 영역에서 가장 큰 값만 남김
+- 예) 큰 사진을 줄여도 대략 어떤 사진인지 알 수 있음. 썸네일이나 미니맵의 개념
+-    keras.layers.MaxPooling2D(pool_size=2)로 설정하면
+     크기 변화는 28X28 > 14X14 > 7X7
+
+- 풀링을 너무 적게하면 특성과 잡음이 많이 섞이게 됨
+- 풀링을 너무 많이하면 특성이 희미해짐
+
+# Flatten
+
+- 평탄화 : 다차원 Feature Map을1 차원 벡터로 펼침(다차원 > 1차원)
+- 예) (4,4,32) > 4 X 4X 32 > 512
+        4 X 4 서랍장에 각 칸마다 32개씩 자료가 있다고 할때
+        모든 자료를 꺼내서 한 줄로 늘어놓는 작업이 평탄화(512개)
+
+# CNN shape 변화 읽기
+
+- None :  샘플 수 , 학습 시점에 결정
+
+[입력층]
+- Input,shape=(None,16,16,1),16X16크기 흑백이미지 입력
+    height=1 , width=16, channels=1
+
+[은닉층]
+- Conv2D, shape=(None,16,16,16),3X3 필터로 16개로 특징맵 16개 생성
+    filetrs=16, kernel_size=3, padding='same;, activation='relu'
+
+- MaxPooling2D, shape=(None,8,8,16), 각 특징맵의 가로/세로를 절반으로 축소
+    pool_size=2
+
+- Conv2D, shape=(None,8,8,32), 3X3 필터로 32개로 특징맵 32개 생성
+    filetrs=32, kernel_size=3, padding='same;, activation='relu'
+
+- MaxPooling2D, shape=(None,4,4,32), 각 특징맵의 가로/세로를 절반으로 축소
+    pool_size=2
+
+- Flatten, shape=(None, 512), 4X4X32를 512개 값의 한 줄로 펼침
+
+- Dense, shape=(None,32),512개 특징을 32개 뉴런으로 조합
+    units=32, activation='relu'
+
+[출력층]
+- Dense, shape=(None,1),이진 분류용 최종 확률값 1개 출력
+    units=1, activation='sigmoid'
+
+# RNN (Recurrent neural Network :  순환 신경망)
+
+- 현재 입력뿐 아니라 이전 시점의 정보를 hidden state로 받아 함께 사용하는 신경망
+- 예) 오늘 기온만 보는 것보다 어제와 그제의 기온 흐름을 같이 보면
+      오늘의 기온 흐름을 더 자연스럽게 이해할 수 있음
+
+# Hidden State : 은닉 상태
+
+- 이전 시점 정보를 요약해서 다음 시점으로 넘기기 위한 상태 정보
+
+# 순차 데이터 shape
+
+- RNN/LSTM 기본 입력  shape: (batch, timesteps, features)
+- 예) (500,20,3) : 500개의 데이터(시퀀스), 시퀀스 당 20개 시점, 시점 당 3개 특성
+        20일 동안 매일 기온,습도,풍속을 기록했다면 timesteps=20, features=3
+
+# SimpleRNN 클래스의 주요 파라미터
+
+- units : hidden state의 차원
+- activation : 상태 계산 활성화 함수, 대표적으로 tanh
+- tanh : Hyperbolic Tangent(쌍곡탄젠트) 함수. 입력값을 -1~1 사이의 값으로 변환
+            tanh(x) = (e^x - e^-x) / (e^x + e^-x)
+- dropout : 입력 연결 일부를 비활성화 하는 비율
+- return_sequences :  모든 시점의 출력 여부
+                      True : 모든 시점의 출력 반환, 출력은 (batch, timesteps,units)
+                      False : 마지막 시점의 출력만 반환, 출력은(batch,units)
+- return_state : 마지막 상태 반환 여부
+
+
+# RNN의 장기 의존성 문제
+- RNN은 과거 정보를 전달하지만 시퀀스가 길어지면 오래전 정보가 충분히 유지되지 못할 수 있음
+- 예) 20명이 한 줄로 서서 문장을 귀에 속삭여 전달한다고 가정하면 이전 정보 소실 위험이 있음
+
+
+# Vanishing Gradient: 기울기 소실
+
+-  학습할 때 '얼마나 수정해야 하는지'라는 신호거 뒤에서 앞으로 전달되는데
+    여러 단계를 거치며 너무 작아지는 현상
+- 예) 업무 지시가 팀장 > 과장 > 대리 > 사원 > 인턴 순으로 내려졌을때
+        처음에는 '매우 중요하게 수정' 이었는데 전달 과정에서 소실로 '조금 수정'정도로 약해짐
+
+# LSTM (Long Short Term Memory)
+
+- 중요한 정보를 오래 유지하고, 필요 없는 정보를 선택적으로 버리도록 만든 RNN 계열 신경망
+- 기억할 것과 버릴 것을 학습하는 RNN
+- 예) 점심 메뉴 > 오래 기억할 필요 없음 (Short Term)
+     고객 계약 마감일 > 오래 기억해야 함 (Long Term)
+      임시 비밀번호 > 일정 시간이 지나면 버려야 함
+
+# Cell State와 Gate
+
+- Cell State : 장기 정보가 흐르는 경로
+- Forget Gate : 기존 정보 중 버릴 것을 결정
+- Input Gate : 새로운 정보 중 저장할 것을 결정
+- Output Gate :  현재 출력으로 사용할 정보를 결정
+- 예) 회사 업무 수첩에서
+    Cell State는 장기 업무수첩,
+    Forget Gate는 필요 없는 오래된 메모들 삭제,
+    Input Gate는 중요한 새 메모 기록,
+    Output Gate는 현재 회의에서 필요한 내용만 꺼냄
+
+# LSTM 주요 파라미터
+
+- units: 출력/상태 차원
+- activation : cell 출력 활성화 함수, 기본 tanh
+- recurrent_activation : gate 활성화 함수, 기본 sigmoid
+- dropout : 입력 연결 dropout
+- recurrent_dropout : 순환 연결 dropout
+- return_sequences : 전체 시점 출력 여부
+- return_state : 상태 반환 여부
+
+# SimpleRNN, LSTM 비교
+
+1) SimpleRNN
+- 구조 단순, 계산량 적음 ,짧은 순서 패턴에 사용, 긴 의존성에 상대적으로 약함
+- 예) 짧은 전달 메모
+
+2) LSTM
+- Gate 와 Cell state 포함, 비교해서 구조 복잡, 긴 의존성에 상대적으로 강함
+- 예) 정리 기능이 있는 업무수첩
+
+# 모델 선택 기준
+
+- 제품 이미지 분류: CNN(공간적 패턴 인식)
+- X-ray 이상 부위 : CNN(형태/경계/질감 검사)
+- 시간 대별 전력량 : RNN/LSTM(시간,순서,절차)
+- 센서 이상 징후 : RNN/LSTM (이전 상태가 현재에 영향)
+- 긴 기간 수요 흐름: LSTM ( 장기 의존성)
+- 일반 표형태의 고객 정보: Dense 또는 전통  ML(공간/시간 축이 핵심이 아님)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

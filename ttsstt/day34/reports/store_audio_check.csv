@@ -1,0 +1,4 @@
+﻿filename,duration,sample_rate,channels,peak,rms,status
+store_A.wav,12.0,44100,1,0.1929,0.01706,ok
+store_B.wav,13.0,44100,1,0.08945,0.00608,ok
+store_C.wav,15.0,44100,1,0.16266,0.01687,ok

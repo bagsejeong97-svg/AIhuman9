@@ -1,0 +1,26 @@
+PS C:\Users\Administrator> psql -U postgres -d postgres
+psql (18.6)
+도움말을 보려면 "help"를 입력하십시오.
+
+postgres=# create user day37_tt with password 'day37';
+CREATE ROLE
+postgres=# create database day37_tt with owner=day37_tt;
+CREATE DATABASE
+postgres=# \l
+                                                       데이터베이스 목록
+   이름    |  소유주  | 인코딩 | 로케일 제공자 |     Collate      |      Ctype       | 로케일 | ICU 룰 |      액세스 권 한
+-----------+----------+--------+---------------+------------------+------------------+--------+--------+-----------------------
+ bideo     | postgres | UTF8   | libc          | Korean_Korea.949 | Korean_Korea.949 |        |        |
+ day29     | day29    | UTF8   | libc          | Korean_Korea.949 | Korean_Korea.949 |        |        |
+ day30     | day30    | UTF8   | libc          | Korean_Korea.949 | Korean_Korea.949 |        |        |
+ day37     | day37    | UTF8   | libc          | Korean_Korea.949 | Korean_Korea.949 |        |        |
+ postgres  | postgres | UTF8   | libc          | Korean_Korea.949 | Korean_Korea.949 |        |        |
+ spring    | postgres | UTF8   | libc          | Korean_Korea.949 | Korean_Korea.949 |        |        |
+ template0 | postgres | UTF8   | libc          | Korean_Korea.949 | Korean_Korea.949 |        |        | =c/postgres          +
+           |          |        |               |                  |                  |        |        | postgres=CTc/postgres
+ template1 | postgres | UTF8   | libc          | Korean_Korea.949 | Korean_Korea.949 |        |        | =c/postgres          +
+           |          |        |               |                  |                  |        |        | postgres=CTc/postgres
+(8개 행)
+
+
+postgres=#

@@ -1,0 +1,253 @@
+# day35_note.txt
+# 사전학습 STT 모델의 음성 전사와 WER, CER, 지연시간 평가
+
+[STT, ASR, Transcription]
+- STT(Speech To Text): 음성을 텍스트로 변환하는 서비스 / 기술
+- ASR(Automatic Speech Recognition): 음성을 자동으로 인식하는 기술 분야
+- Transcription(전사): 음성 모델이 실제로 들었다고 판단해서 기록한 스크립트(글)
+
+[모델 학습과 추론]
+- 사전학습(Pretraining) : 수많은 예시들을 학습해 일반적인 패턴을 익힘
+- 추론(Inference) : 새 음성이 들어오면 기존 학습된 모델로 글자들을 예측함
+- 파인튜닝(Fine-Turning): 의료나 법률등 특정 분야의 데이터로 추가학습
+- 비유 예)
+    기출문제로 공부하는 것은 '사전학습'
+    새 시험문제를 푸는 것은 '추론'
+    전문 자격시험 대비 추가로 공부하는 것은 '파인튜닝'
+
+[음성 인식 처리 절차]
+녹음 : 사람의 목소리를 WAV파일 등으로 저장
+> 파일 디코딩: WAV파일을 디지털 음성 데이터(숫자 배열)로 변환
+> 모델 내부 처리: Whisper 모델이 음성을 분석하고 텍스트를 예측
+> 텍스트 조각 출력: 분석한 결과를 Segment 단위로 반환
+> 조각 합치기: 여러 Segment를 하나의 문장으로 연결
+> 정답과 비교 : 정답(Reference)와 비교해서  WER/CER 계산
+> 평가표 저장 : 예측 문장, 오류율, 처리시간 등을 CSV등에 저장
+
+[음성 입력 확인]
+- Sample Rate(샘플링레이트) : 1초에 디지털 샘플을 측정한 회수
+- Channel(채널): 힌 개(모노) 또는 두 개(스테레오)
+- Duration(재생 길이) : 파일 속의 녹음이 몇 초인지
+- PCM(Pulse Code Modulation) : 아날로그 신호를 일정한 간격으로 측정해서 숫자로 변환하는 방식
+- WAV(Waveform Audio File): 디지털 음성 데이터를 저장하는 파일 형식 / 확장자
+- PCM WAV라면 wave 모듈로 샘플 수와 샘플레이트를 조회할 수 있음
+- 코드)
+import wave
+with wave.open('audio/clip01.wav','rb') as f:
+    frames = f.getnframes() # 프레임(샘플) 수
+    rate = f.getframerate() # 초당 프레임 수
+    duration = frames / rate # 재생시간 (초)
+
+[whisper 모델]
+- whisper: 여러 언어를 인시할 수 있는 음성 인식 모델 중 하나
+- faster-whisper: Whisper 구현체 중 하나
+- tiny 모델은 비교적 작아 CPU에서 간단한 시연에 적합하지만
+    정확도가 반드시 좋은 것은 아님
+- int8(8bit 정수): 모델 계산에 사용하는 수치 표현을 일부 8비트 정수로 줄여서
+                   메모리 사용량이나 연산 비용을 낮추는 설정
+- 생성 코드)
+from faster_whisper import WhisperModel
+model = whisperModel('tiny', device='cpu', compute_type='int8')
+
+[transcibe() 메서드]
+- 코드)
+# segments : 전사 조각을 순차적으로 얻을 수 있는 iterable
+# segment : 하나의 전사 조각 = 전사한 문자열 + 시작 시간 + 종료 시간
+# info: 언어 정보 등 부가 정보가 담긴 객체
+segments, info = model.transcribe(
+    'audio/clio01.wav', # 전사 대상 파일 경로
+    language = 'ko',    # 언어코드, None이면 언어를 자동 인식
+    beam_size = 5   # 단어 탐색의 폭  (얼마나 많은 단어를 정답 대상으로 할지)
+)
+
+[segment 병합]
+- 코드)
+pieces = list(segments) # segment들을 리스트로 변환
+text = ''.join(piece.text.strip() for piece in pieces).strip() # 병합된 문자열
+- segment는 text(내용), start(시작 시간), end(종료 시간)으로 구성됨
+- 예) 0~2초 ' 오늘 회의는', 2~4초 '  세시입니다.' 가 나왔다면
+        병합 결과는 ' 오늘 회의는 세시 입니다.'
+- 시작 시간, 종료 시간은 자막 타임스탬프, 발화 구간 확인에 사용됨
+
+[언어 지정과 자동 탐지]
+- language = 'ko' : 한국어로 고정해서 인식
+- language = None : 모델이 입력의 언어를 추정
+- 한국어 WAV 3개를 같은 조건으로 비교할 때는 언어 고정이 도움이 됨
+- 다국어 녹음을 한꺼번에 처리한다면 모델이 언어를 추정하도록 해야 함
+
+[Beam Search: 빔 탐색]
+- 하나의 단어라고 특정하지 않고 점수가 높은 여러 후보 단어들을 함께 탐색
+- 후보 단어가 많다고 해서 반드시 정답에 가까워 지는 것은 아님
+- beam_size 값을 늘리면 실행시간이 늘 수 있지만 다양한 후보군에서 탐색이 가능
+
+[VAD]
+- VAD(Voice Activity Detection) : 음성 활동 검출
+- 소리가 있는 구간과 비발화(무음) 구간을 구분해서 처리
+- vad_filter = True는 VAD 필터를 켜는 옵션
+- 무음 구간을 줄일 수 있지만 짧은 발화, 작은 목소리 또는
+    잡음 환경에서 유의미한 음성도 함께 잘릴 위험이 있음
+
+[정답과 예측 결과]
+- 정답(Reference): 사람이 발화를 듣고 확인한 기준 문장
+                    상황에 따라서 정답이 정답이 아닐 가능성이 있음
+
+- 예측결과(Hypothesis): STT 모델이 예측한 결과 문장
+- 예) 실제 '배달은 내일' / 정답 '배송은 내일'이라면
+        평가 이전에 정답 자체부터 확인해야 함
+
+[WER]
+- WER(Word Error Rate: 단어 오류율)
+- WER = (S + D + I) / N
+    S(Substitution) : 정답 단어 중 대체된 단어 수
+    D(Deletion) : 정답에는 있지만 빠진 단어 수
+    I(Insertion) : 정답에는 없는데 추가된 단어 수
+    N : 정답의 단어 수
+- 예) 10단어 중 대체 1, 삭제 1, 삽입 1라면
+        WER = (1 + 1+ 1) / 10 = 3 = 0.3 = 30%
+- 삽입이 지나치게 많으면 WER은 100%를 넘을 수 있음
+- WER이 0%면 완전 일치, 값이 작을수록 오류가 적다는 뜻
+
+[파이별 WER 단순 평균 vs 전체 WER]
+- 파일마다 정답 단어 수가 다를 때 두 값은 다름
+- 예)
+    파일 1: 정답 2 단어, 오류 1 > WER = 50%
+    파일 2: 정답 18단어, 오류 1 > WER = 5.56%
+    파일 평균 WER = (50 +5.56) / 2 = 27.78%
+    전체 WER = (1+1) / (2+18) = 10%
+- WER을 보고서에 작성할때는 파일 평균인지 전체인지 반드시 기록해야 함
+
+[CER]
+- CER(Character Error Rate) : 문자 오류 비율
+- CEr = (S-char + D_char + I_char) / N_char
+- 한 글자씩 비교한 오류  합계를 정답 문자 수로 나눔
+- 공백도 문자이므로 CER 계산 전에 공백 제거 여부를 확인해야 함
+
+[Edit Distance]
+- Edit Distance : 편집 거리
+- 정답과 예측을 같게 만들기 위한 최소 수정 횟수
+- 한번의 Edit는 '대체 / 삭제 / 삽입' 정의
+    대체 1번도 Edit 1번, 삭제 1번도 Edit 1번, 삽입 1번도 Edit 1번
+
+[한국어 평가 주의사항]
+- 일반적인 jiwer 단어 계산은 공백으로 분리한 어절을 단위로 함
+  한국어 문법상의 품사, 형태소로 자동 분리하는 지표가 아님
+- 예) '인공지능'과 '인공 지능'은 발음과 의미가 같지만 WER가 달라짐\
+- 한국어에서 WER과 CER을 함께 보고, 중요한 고유명사 오류는 사람이
+    별도로 확인 하는 것이 실무적으로 필요함
+
+
+[NFC 정규화]
+- 코드)
+text = unicodedata.normalize('NFC',text)
+- NFC (Normalization Form Canonical Composition)
+    분리된 문자들을 가능한하나의 완성된 문자로 합치는 유니코드 정규화 방식
+- 한글 조합형 / 완성형
+    조합형 : 표현방식 ㄱ + ㅏ, 유니코드 U+1100 + U+1161
+    완성형 : 표현방식 가, 유니코드 U+AC00
+    동일한 '가' 문자에 대해서 두 가지 유니코드 패턴이 존재
+- NFC 정규화 : 유니코드 패턴에 상관없이 동일하게 취급하도록 정규화
+
+[Latency]
+- Latency(지연 시간): 음성 전사 처리에 실제로 소요된 시간 (초)
+- 코드)
+    begin = time.perf_counter() # 전사 전 시간 측정 함수
+    segments, info = model.transcribe('audio/clio01.wav', language='ko') # 전사
+    end = time.perf_counter() # 전사 후 시간 측정 함수
+    elapsed = end - begin # 소요 시간 = 지연 시간
+
+[RTF]
+- RTF(Real Time Factor: 실시간 계수
+- RTF = 전사 처리시간 (초) / 음원 재생시간 (초)
+- 예) 10초 음성 전사에 2초 걸리면 RTF = 2 / 10 = 0.2
+- RTF < 1 : 음원 재생시간보다 처리시간이 더 빠름
+- RTF = 1 : 음원 재생시간과 처리시간이 같음
+- RTF > 1 : 음원 재생시간보다 처리시간이 더느림
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

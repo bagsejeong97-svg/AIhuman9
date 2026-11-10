@@ -1,0 +1,8 @@
+﻿group,filename,status,source_sec,prepared_sec,source_sr,target_sr,channels,source_peak,prepared_peak,note
+store_audio,store_A.wav,ok,12.0,12.0,44100,16000,1,0.1929,0.76889,자동 검사 통과 (청취 검수는 별도로 필요함)
+store_audio,store_B.wav,ok,13.0,13.0,44100,16000,1,0.08945,0.35785,자동 검사 통과 (청취 검수는 별도로 필요함)
+store_audio,store_C.wav,ok,15.0,15.0,44100,16000,1,0.16266,0.64931,자동 검사 통과 (청취 검수는 별도로 필요함)
+interview_audio,interview_10s.wav,ok,10.0,10.0,44100,16000,1,0.63342,0.63171,자동 검사 통과 (청취 검수는 별도로 필요함)
+interview_audio,interview_12s.wav,ok,12.0,11.904,44100,16000,1,0.70294,0.70288,자동 검사 통과 (청취 검수는 별도로 필요함)
+interview_audio,interview_15s.wav,ok,15.0,14.816,44100,16000,1,0.52927,0.52943,자동 검사 통과 (청취 검수는 별도로 필요함)
+interview_audio,interview_30s.wav,ok,30.315,30.315,44100,16000,2,0.1485,0.14755,자동 검사 통과 (청취 검수는 별도로 필요함)

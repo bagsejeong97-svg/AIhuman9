@@ -1,0 +1,55 @@
+﻿컬럼명 ,dtype ,전체행수 ,Non-Null개수 :,고유갑수:,예시값:
+학생ID,str,8,8,"<bound method IndexOpsMixin.nunique of 0    S001
+1    S002
+2    S003
+3    S004
+4    S005
+5    S006
+6    S007
+7    S008
+Name: 학생ID, dtype: str>",S001
+이름,str,8,8,"<bound method IndexOpsMixin.nunique of 0    김민지
+1    박준호
+2    이서연
+3    최도윤
+4    정하은
+5    윤지호
+6    한유진
+7    오민석
+Name: 이름, dtype: str>",김민지
+전공,str,8,8,"<bound method IndexOpsMixin.nunique of 0    컴퓨터공학
+1      경영학
+2      통계학
+3     전자공학
+4      경영학
+5    컴퓨터공학
+6      디자인
+7     전자공학
+Name: 전공, dtype: str>",컴퓨터공학
+Python점수,int64,8,8,"<bound method IndexOpsMixin.nunique of 0    88
+1    76
+2    95
+3    82
+4    91
+5    69
+6    84
+7    90
+Name: Python점수, dtype: int64>",88
+AI점수,int64,8,8,"<bound method IndexOpsMixin.nunique of 0    91
+1    80
+2    93
+3    85
+4    89
+5    74
+6    88
+7    92
+Name: AI점수, dtype: int64>",91
+출석률,float64,8,8,"<bound method IndexOpsMixin.nunique of 0     98.0
+1     94.5
+2    100.0
+3     96.0
+4     99.0
+5     91.5
+6     97.0
+7     98.5
+Name: 출석률, dtype: float64>",98.0

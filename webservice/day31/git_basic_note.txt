@@ -1,0 +1,95 @@
+# GIT 기본 사용법
+
+* GIT : 리눅스 개발한 리누스 토발즈가 만든 분산형 버젼 관리 시스템(Version Control System,VCS)
+        여러 곳에 나누어져 있는 파일 자원들의 버젼을 관리하는 시스템
+
+* GIT HUB : 인터넷 상에 레포지토리(파일저장소)를 생성하고 공유할 수 있는 웹서비스
+* GIT은 로컬에 설치, GIT HUB는 접속해서 계정 생성하고 사용
+
+* GIT 기본 명령어
+1) git init
+2) git add .
+3) git commit -m '커밋메세지'
+4) git branch -M '브랜치명'
+5) git remote add origin 원격레포지토리URL
+6) git push -u origin 브랜치명
+
+* 버젼관리 흐름
+프로젝트폴더
+> git init(GIT 저장소로 만듬)
+> git add .(변경 파일을 Staging 함, 즉 변경관리대상 설정)
+> git commit -m 커밋메세지 (로컬레파지토리에 변경을 저장)
+> git branch -M 브랜치명 (기본 브랜치명을 변경)
+> git remote add origin 원격레파지토리URL(GIT HUB 원격레파지토리를 연결)
+> git push(GIT HUB 원격레파지토리에 변경 반영)
+
+1. git init ( 최조 한번만 실행 )
+- 현재 디렉토리를 GIT 저장소로 초기화
+- 예를 들어 위치가 D:\aihuman9\work_space\webservice\day31 이라면
+    명령을 실행하면 이 폴더 안에 숨긴 데릭토리인 .git이 생성됨
+- 일반 폴더를 GIT이 버젼을 관리하는 폴더로 만드는 명령
+
+2. git add .
+- 현제 디렉토리의 변경된 파일들을 Staging Area(스테이징 영역)에 추가
+- 즉, 변경사항들을 관리하겠다는 뜻
+- .은 현재 디렉토리내의 모든 파일과 하위 디렉토리를 의미
+
+3. git commit -m '커밋메세지'
+- Staging Area에 등록한 파일들을 하나의 버젼으로 로컬레파지토리에 추가
+- m은 message를 의미, 동일한 파일에 커밋을 여러번 할 경우 식별하기 위해 사용
+
+4. git branch -M 브랜치명
+- 현재 브랜치의 이름을 변경
+- Branch(브랜치)는 독립적으로 개발할 수 있는 작업 흐름
+    예) 팀프로젝트시에 한명이 원격레파지토리를 하나 생성하고 여러 브랜치를 만들어서
+        팀원들에게 배분해서 작업하게 하고 작업이 완료되면 메인브랜치에 통합(Merging)함
+- M은 현재 브랜치 이름을 변경하는 옵션
+- 현재 브랜치 이름은 git branch 명령으로 확인
+
+5. git remote add origin 원격레파지토리 URL
+- 예) git remote add origin https://github.com/계정명/레파지토리명.git
+- add : 새로운 원격레파지토리 추가
+- origin : 원격레파지토리 별명
+- 원격레파지토리URL : github.com에 가입해서 생성한 원격레파지토리 URL
+- git remote -v : 원격레파지토리 연결 상태 확인
+
+6. git push -u origin 브랜치명
+- 로컬레파지토리의 브랜치명에 해당하는 브랜치를 GIT HUB의 origin 원격레파지토리로 전송
+- git push : 원격레파지토리로 전송
+- origin : 전송할 원격레파지토리의 별칭
+- 브랜치명 : 로컬레파지토리의 브랜치명
+- u : upstream 설정 ('git push oring 브랜치명' 한번 수행한 다음에는 'git push'만 수행)
+
+7. git clone 원격레파지토리URL
+- 원격레파지토리 클론(다운로드)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
