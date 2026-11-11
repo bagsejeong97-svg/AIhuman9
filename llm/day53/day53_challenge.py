@@ -2,14 +2,11 @@
 # 주제:
 import json
 from pathlib import Path
-
-
 from util.print_util import pp
 
 
 ROOT = Path(__file__).resolve().parent
 OUT = ROOT / 'day53_challenge.jsonl'
-
 
 
 inputs = [
@@ -43,12 +40,6 @@ FEEDBACK_SCHEMA = {
 
 
 def build_prompt(answer):
-    if not isinstance(answer, str) or not answer.strip():
-        raise ValueError('제품설명을 입력하세요.')
-
-    if len(answer) > 2000:
-        raise ValueError('답변은 2000자 이하로 입력하세요.')
-
     return(
         '[역할] 당신은 서버 보안 이벤트를 분류하는 분석가입니다.\n'
         '[작업] 이벤트의 위험 등급과 조치 권고를 작성하세요.\n'
