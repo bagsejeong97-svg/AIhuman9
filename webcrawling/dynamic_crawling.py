@@ -1,271 +1,222 @@
 # dynamic_crawling.py
-# Sellenium을 활용한 동적 크롤링
-
-# OrangeHRM 공개 데모 웹사이트 > 로그인 > PIM 메뉴 클릭 > Employee List 획득 > Excel 저장
-
-# 설치: python -m pip install selenium openpyxl
-
+# Selenium을 활용한 동적 크롤링
+# OrangeHRM > 로그인 > PIM > Employee List > 전체 목록 > Excel 저장
+# 설치: python -m pip install selenium pandas openpyxl
 import time
 import os
 from pathlib import Path
 import pandas as pd
-from selenium import webdriver # 웹브라우져 드라이버
+from selenium import webdriver  # 웹브라우저 드라이버
 from selenium.common.exceptions import (
     StaleElementReferenceException, TimeoutException, WebDriverException
 )
-from selenium.webdriver.chrome.options import Options # 드라이버 옵션
-from selenium.webdriver.common.by import By # 셀렉터
-from selenium.webdriver.support import expected_conditions as EC # 대기 조건
-from selenium.webdriver.support.ui import WebDriverWait # 대기
+from selenium.webdriver.chrome.options import Options  # 드라이버 옵션
+from selenium.webdriver.common.by import By  # 셀렉터
+from selenium.webdriver.support import expected_conditions as EC  # 대기 조건
+from selenium.webdriver.support.ui import WebDriverWait  # 대기
 from util.print_util import pp, up
 
-# OrangeHRM 동적 크롤링 실습용 오픈소스 웹페이지 (오픈소스 인사관리시스템)
+# OrangeHRM 공개 데모 사이트
 LOGIN_URL = 'https://opensource-demo.orangehrmlive.com/web/index.php/auth/login'
-
-# 로그인 계정명 / 비밀번호
 USERNAME = os.getenv('ORANGEHRM_USERNAME', 'Admin')
 PASSWORD = os.getenv('ORANGEHRM_PASSWORD', 'admin123')
-
-HEADLESS = False # True: 브라우져를 화면에 표시하지 않음
-
-MAX_PAGES = 3 # 최대 수집할 페이지 수, 0이면 마지막 페이지까지
-
-WAIT_SECONDS = 20 # DOM 요소의 최대 대기 시간 (초)
-
+HEADLESS = False  # True: 브라우저 숨김
+MAX_PAGES = 0  # 0이면 마지막 페이지까지
+WAIT_SECONDS = 20  # 동적 화면 최대 대기 시간(초)
 ROOT = Path(__file__).resolve().parent
 SAVE_PATH = ROOT / 'orangehrm_employee_list.xlsx'
+COLUMNS = ['사원번호', '이름', '직책', '고용상태', '부서', '상급자']
 
-COLUMNS = ['사원번호', '이름',  '직책', '고용상태', '부서', '상급자']
-
-# Chrome을 실행하고 브라우져 제어 객체를 돌려주는 함수
-# 반환값: webdriver.Chrome
+# Chrome 브라우저를 실행하는 함수
+# 반환값 : webdriver.Chrome, Selenium 브라우저 제어 객체
 def create_browser():
-    options = Options() # Chrome 실행 옵션
-    options.add_argument('--window-size=1500,950') # 창의 크기
+    options = Options()  # Chrome 옵션
+    options.add_argument('--window-size=1500,950')
     if HEADLESS:
-        options.add_argument('--headless=new') # 브라우져 표시하지 않음
-    browser = webdriver.Chrome(options=options) # 브라우져 제어 객체 생성
-    browser.set_page_load_timeout(45) # 페이지 로딩 최대 시간 (초)
+        options.add_argument('--headless=new')
+    browser = webdriver.Chrome(options=options)
+    browser.set_page_load_timeout(45)
     return browser
 
-# 로그인 폼에 계정 정보를 입력하고 대시보드 화면이 나타날 때까지 기다리는 함수
-# browser: webdriver.Chrome, 현재 실행 중인 브라우져
-# wait: WebDriverWait, 동적으로 나타나는 요소를 기다림
+# OrangeHRM 데모 계정으로 로그인하는 함수
+# browser : webdriver.Chrome, 실행 중인 브라우저
+# wait : WebDriverWait, 요소 표시를 기다리는 객체
+# 반환값 : 없음
 def login(browser, wait):
-
-    # 로그인 페이지를 GET 방식으로 요청해서 열기
     browser.get(LOGIN_URL)
-
-    # name속성의 값이 username인 요소가 화면에 보여질때까지 대기
-    name = wait.until(EC.visibility_of_element_located((By.NAME, 'username')))
-
-    # 계정명 입력
+    name = wait.until(EC.visibility_of_element_located(
+        (By.NAME, 'username')
+    ))
     name.send_keys(USERNAME)
-
-    # name속성의 값이 password인 요소를 찾아서 비밀번호 입력
     browser.find_element(By.NAME, 'password').send_keys(PASSWORD)
-
-    # 로그인 버튼 클릭
-    # CSS 셀렉터 방식으로 type속성의 값이 submit인 button요소가 클릭 가능할때까지 기다렸다가 클릭
     wait.until(EC.element_to_be_clickable((
         By.CSS_SELECTOR, 'button[type="submit"]'
     ))).click()
-
-    # 로그인 버튼 클릭 후 좌측 메뉴가 나타날때까지 대기
-    wait.until(EC.presence_of_element_located(
-        (By.CSS_SELECTOR, 'ul.oxd-main-menu')
-    ))
-
+    wait.until(EC.presence_of_element_located((
+        By.CSS_SELECTOR, 'ul.oxd-main-menu'
+    )))
     pp('[로그인 성공] 대시보드 접속')
 
-
-# 좌측 PIM 메뉴를 누른 뒤 상단 Employee List 메뉴를 선택하는 함수
+# PIM 메뉴와 Employee List 메뉴를 차례로 클릭하는 함수
+# browser : webdriver.Chrome, 실행 중인 브라우저
+# wait : WebDriverWait, 클릭 가능한 시점을 기다리는 객체
+# 반환값 : 없음
 def open_employee_list(browser, wait):
-
-    # class 속성의 값이 oxd-main-menu-item인 a 요소 중 href 속성의 값이 /pim 문자열을 포함하는
-    # 요소가 클릭 가능할 때까지 대기
     pim = wait.until(EC.element_to_be_clickable((
         By.CSS_SELECTOR, 'a.oxd-main-menu-item[href*="/pim"]'
     )))
-
     pim.click()
-
-    # 상단 탭 메뉴들
     menus = wait.until(EC.presence_of_all_elements_located((
         By.CSS_SELECTOR, 'a.oxd-topbar-body-nav-tab-item'
     )))
-
-    # 상단 탭 메뉴 중 Employee List메뉴 클릭
     for menu in menus:
         if menu.text.strip() == 'Employee List':
             wait.until(EC.element_to_be_clickable(menu)).click()
-        break
-
-    # 테이블 보일 때까지 대기
-    wait.until(EC.visibility_of_element_located((
-        By.CSS_SELECTOR, '.oxd-table'
-    )))
-
-    pp('[메뉴 이동] PIM > Employee List')
-
-# 현재 페이지 행을 읽는 함수
-# page_number: int, Excel에 기록할 페이지 번호
-# 반환값: list[dict], 직원별 사원번호, 이름, 직책 등의 목록
-def collect_page(browser, wait, page_number):
-
-    # 테이블 헤더 보일 때까지 대기
+            break  # 일치하는 메뉴를 클릭했을 때만 반복 종료
+    else:
+        raise TimeoutException('Employee List 메뉴를 찾지 못했습니다.')
     wait.until(EC.visibility_of_element_located((
         By.CSS_SELECTOR, '.oxd-table-header'
     )))
+    pp('[메뉴 이동] PIM > Employee List')
 
-
-
+# 현재 페이지의 직원 행을 수집하는 함수
+# browser : webdriver.Chrome, 직원 목록 화면
+# wait : WebDriverWait, 화면 표시를 기다리는 객체
+# page_number : int, 로그에 표시할 페이지 번호
+# 반환값 : list[dict], 현재 페이지 직원 정보
+def collect_page(browser, wait, page_number):
+    wait.until(EC.visibility_of_element_located((
+        By.CSS_SELECTOR, '.oxd-table-header'
+    )))
+    wait.until(EC.invisibility_of_element_located((
+        By.CSS_SELECTOR, '.oxd-loading-spinner'
+    )))
     records = []
-
-    # 데이터 행들
-    cards = browser.find_elements(By.CSS_SELECTOR, '.oxd-table-body .oxd-table-card')
-
+    cards = browser.find_elements(
+        By.CSS_SELECTOR, '.oxd-table-body .oxd-table-card'
+    )
     for card in cards:
-
-        cells = card.find_elements(By.CSS_SELECTOR, '.oxd-table-cell') # 셀들
-
-        values = [cell.text.strip() for cell in cells] # 셀 값들
-
-        # pp(values) # 확인용
-
+        cells = card.find_elements(By.CSS_SELECTOR, '.oxd-table-cell')
+        values = [cell.text.strip() for cell in cells]
+        if len(values) < 8:  # 테이블이 아직 로딩되지 않았거나 빈 행
+            continue
         datarow = {
             '사원번호': values[1],
             '이름': values[2] + ' ' + values[3],
-            '직무': values[4],
+            '직책': values[4],  # COLUMNS의 열 이름과 일치
             '고용상태': values[5],
             '부서': values[6],
             '상급자': values[7]
         }
-
-        # pp(datarow) # 확인용
-        records.append(datarow)
+        if datarow['사원번호'] or datarow['이름'].strip():
+            records.append(datarow)
     return records
 
-# 현재 페이지의 다음 버튼을 찾아 클릭하는 함수
-# 반환값 : bool, 다음 페이지로 이동하면 True, 마지막이면 False
+# 다음 페이지 버튼 클릭 후 실제 목록 변경까지 대기하는 함수
+# browser : webdriver.Chrome, 현재 직원 목록 화면
+# wait : WebDriverWait, 페이지 변경을 기다리는 객체
+# 반환값 : bool, 이동 성공 True / 마지막 페이지 False
 def click_next(browser, wait):
-
-    # 다음 버튼
-    # class 속성의 값이 .oxd-pagination-page-item인 button
-    # 하위에 class 속성의 값이 bi-chevron-right인 i 요소들
-    button = browser.find_element(
-        By.CSS_SELECTOR, '.oxd-pagination-page-item:has(i.bi-chevron-right)'
+    # find_elements는 버튼이 없을 때 빈 리스트를 돌려줌
+    buttons = browser.find_elements(
+        By.CSS_SELECTOR,
+        'button.oxd-pagination-page-item:has(i.bi-chevron-right)'
     )
-
-    if not button: # 다음 버튼이 없다면 마지막 페이지
+    if not buttons:
         return False
-    wait.until(EC.element_to_be_clickable(button)).click() # 다음 버튼 클릭
-    return False
-# 수집한 직원 데이터를 Excel 파일로 저장하는 함수
-# records: list[dict], 여러 페이지에서 수집한 직원 목록
-# 반환값: Path, 저장된 Excel 파일의 절대 경로
+    button = buttons[-1]
+    classes = button.get_attribute('class') or ''
+    if not button.is_enabled() or '--disabled' in classes:
+        return False  # 마지막 페이지
+    old_cards = browser.find_elements(
+        By.CSS_SELECTOR, '.oxd-table-body .oxd-table-card'
+    )
+    old_first = old_cards[0] if old_cards else None
+    browser.execute_script(
+        'arguments[0].scrollIntoView({block: "center"});', button
+    )
+    wait.until(EC.element_to_be_clickable(button)).click()
+    # 클릭 완료와 데이터 교체 완료는 다름. 이전 행이 제거될 때까지 대기
+    if old_first is not None:
+        wait.until(EC.staleness_of(old_first))
+    wait.until(EC.invisibility_of_element_located((
+        By.CSS_SELECTOR, '.oxd-loading-spinner'
+    )))
+    wait.until(EC.visibility_of_element_located((
+        By.CSS_SELECTOR, '.oxd-table-header'
+    )))
+    return True
 
+# 수집한 직원 목록을 Excel로 저장하는 함수
+# records : list[dict], 여러 페이지의 직원 정보
+# 반환값 : Path, 저장한 파일 경로
 def save_excel(records):
-
     SAVE_PATH.parent.mkdir(parents=True, exist_ok=True)
-
     frame = pd.DataFrame(records, columns=COLUMNS)
-
-    with pd.ExcelWriter(SAVE_PATH, engine="openpyxl") as writer:
-
-        frame.to_excel(writer, sheet_name="직원명단", index=False)
-        sheet = writer.sheets["직원명단"]
-        sheet.freeze_panes = "A2"  # 첫 번째 제목 행을 고정
-        sheet.auto_filter.ref = sheet.dimensions  # 제목에 필터 적용
-
+    # 사원번호로 중복 확인, 중복이 있다면 페이지 전환 문제 여부 조사
+    pp(f'[저장 직전] {len(frame)}행 / '
+       f'고유 사원번호 {frame["사원번호"].nunique()}건')
+    with pd.ExcelWriter(SAVE_PATH, engine='openpyxl') as writer:
+        frame.to_excel(writer, sheet_name='직원명단', index=False)
+        sheet = writer.sheets['직원명단']
+        sheet.freeze_panes = 'A2'
+        sheet.auto_filter.ref = sheet.dimensions
         widths = [16, 44, 30, 25, 25, 25]
-
         for index, width in enumerate(widths, start=1):
             sheet.column_dimensions[
                 sheet.cell(row=1, column=index).column_letter
             ].width = width
-
-        for cell in sheet["A"][1:]:
-            cell.number_format = "@"  # 사원번호는 텍스트 서식 사용
-
+        for cell in sheet['A'][1:]:
+            cell.number_format = '@'
+    # 저장된 파일을 다시 읽어 행 수 확인
+    saved_count = len(pd.read_excel(SAVE_PATH, dtype={'사원번호': str}))
+    pp(f'[저장 검증] Excel 데이터 {saved_count}행')
+    if saved_count != len(frame):
+        raise ValueError('Excel 저장 전후 행 수가 일치하지 않습니다.')
     return SAVE_PATH
 
-
+# 로그인부터 전체 페이지 수집과 Excel 저장까지 실행하는 함수
+# 반환값 : 없음
 def main():
-
     browser = None
-
     records = []
-
     try:
-
         browser = create_browser()
-
-        wait = WebDriverWait(browser, WAIT_SECONDS) # 20초 대기
-
+        wait = WebDriverWait(browser, WAIT_SECONDS)
         login(browser, wait)
-
         open_employee_list(browser, wait)
-
-        records=collect_page(browser, wait, 1)
-
         page_number = 1
-
         while True:
-
             current = collect_page(browser, wait, page_number)
-            pp(f'[수집] {page_number}페이지: {len(current)}명')
-
+            records.extend(current)  # 누적 목록에 현재 페이지 추가
+            pp(f'[수집] {page_number}페이지: {len(current)}명 / '
+               f'누적 {len(records)}명')
             if MAX_PAGES > 0 and page_number >= MAX_PAGES:
                 break
-
             if not click_next(browser, wait):
                 break
             page_number += 1
-
         if records:
             frame = pd.DataFrame(records, columns=COLUMNS)
             pp(frame.to_string(index=False))
             path = save_excel(records)
-            pp(f'[완료] {len(records)}행 수집 / Excel 저장: {path}')
+            pp(f'[완료] {len(records)}행 / Excel 저장: {path}')
         else:
             pp('직원 목록이 없어서 Excel 저장하지 않음')
-
-    except (TimeoutException, StaleElementReferenceException, WebDriverException) as e:
-        pp(e)
-
+    except (TimeoutException, StaleElementReferenceException,
+            WebDriverException) as e:
+        pp(f'[브라우저 오류] {type(e).__name__}: {e}')
+        raise
     finally:
-
         time.sleep(10)
-
         if browser is not None:
-            browser.quit() # 예외 발생해도 브라우져 자원 해제
+            try:
+                browser.quit()
+            except WebDriverException:
+                pass  # 이미 닫힌 브라우저는 다시 종료할 필요 없음
 
 if __name__ == '__main__':
     main()
 
-# 뉴스 기사 모음 => 뉴스기사 웹크롤링 => ai api 요약 => 정리 csv 저장
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+up(5)
