@@ -20,8 +20,8 @@ DATA = ROOT / 'data' # 입력 데이터 경로
 OUT = ROOT / 'output' # 출력 데이터 경로
 
 # 미션: meeting(회의록), email(이메일), sales(매출), career(채용)
-MISSION = 'meeting'
-# MISSION = 'email'
+# MISSION = 'meeting'
+MISSION = 'email'
 # MISSION = 'sales'
 # MISSION = 'career'
 

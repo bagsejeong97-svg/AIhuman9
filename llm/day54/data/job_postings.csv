@@ -1,0 +1,4 @@
+﻿id,role,requirements
+J01,Python 데이터 분석 담당,"Python, pandas, SQL, 대시보드 구현 경험; 통계 기초; 협업 경험"
+J02,AI 서비스 개발,"Python, REST API, LLM API 연동, Git, 테스트 코드, 문서 작성"
+J03,업무자동화 기획,"Excel 데이터 처리, Python 자동화, 사용자 요구사항 정리, 개선 성과 분석"

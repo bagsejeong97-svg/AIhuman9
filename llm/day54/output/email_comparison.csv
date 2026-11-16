@@ -1,0 +1,11 @@
+﻿mission,version,model,created_utc,score,errors,seconds,input_tokens,output_tokens,response_text
+email,v1,gpt-4.1-mini,2026-11-11T03:48:47.685299+00:00,0,MISSING:category;MISSING:needs_human;MISSING:priority;MISSING:reply;잘못된 카테고리;잘못된 우선순위;잘못된 needs_human,1.78,121,77,"{
+  ""email_id"": ""E01"",
+  ""response"": ""안녕하세요, 고객님. 배송 예정일이 지났음에도 불구하고 운송장 조회가 되지 않아 불편을 드려 죄송합니다. 현재 배송 상황을 긴급 확인 후 빠른 안내를 드리겠습니다. 조금만 기다려 주시기 바랍니다.""
+}"
+email,v2,gpt-4.1-mini,2026-11-11T03:48:49.105292+00:00,25.0,OK,1.42,180,83,"{
+  ""category"": ""배송"",
+  ""priority"": ""high"",
+  ""reply"": ""안녕하세요. 배송 예정일이 경과되었음에도 운송장 조회가 되지 않아 불편을 드려 죄송합니다. 즉시 확인 후 빠른 안내 드리도록 하겠습니다. 조금만 기다려 주시기 바랍니다."",
+  ""needs_human"": true
+}"

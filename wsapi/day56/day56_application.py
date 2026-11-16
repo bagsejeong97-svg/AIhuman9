@@ -75,7 +75,7 @@ def initialize_schema():
         ID BIGSERIAL PRIMARY KEY,
             SEMINAR_NAME VARCHAR(80) NOT NULL,
             ATTENDEE VARCHAR(30) NOT NULL,
-            STATUS VARCHAR NOT NULL,
+            STATUS VARCHAR NOT NULL DEFAULT 'requested',
             CREATED_AT TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
         )
         ''')
