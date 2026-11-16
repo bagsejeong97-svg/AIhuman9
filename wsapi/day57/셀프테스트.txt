@@ -1,0 +1,41 @@
+
+AI Inference를 한국어로 무엇이라고 합니까?
+	추론
+학습된 모델을 API에서 호출 가능하게 하는 방식을 무엇이라 합니까?
+	ML 모델 서빙
+추론 요청 경로에 주로 사용하는 HTTP 메서드는?
+	post
+Python FastAPI 요청 데이터를 검증하는 대표 라이브러리는?
+	pydantic
+텍스트 특징을 수치 벡터로 바꾸는 실습 기법의 약어는?
+	TF-IDF
+Pipeline의 fit() 메서드는 어떤 역할을 합니까?
+	학습
+predict_proba()는 무엇을 반환합니까?
+	확률
+모델 초기화를 한 번만 수행하게 캐시하는 데 사용한 데코레이터는?
+	iru_cache
+Streamlit에서 HTTP API를 호출한 라이브러리는?
+	requests
+FastAPI에서 비동기 외부 요청에 사용한 클라이언트는?
+	httpx.asyncclient
+HTTP 요청 제한 시간을 설정하는 키워드 인자는?
+	timeout
+파싱한 JSON 결과를 Streamlit 화면에 표시한 함수는?
+	st.json
+파일을 multipart 방식으로 받는 FastAPI 객체는?
+	uploadfile
+WAV 샘플링레이트를 읽는 wave 메서드는?
+	.getframerate()
+WAV 총 길이(초)를 구하는 식은?
+	frames / rate
+Perso API 인증에 사용하는 헤더 이름은?
+	XP-API-KEY
+Perso에서 업로드된 미디어를 구분하는 ID는?
+	mediaSeq
+Perso에서 생성 작업을 식별하는 ID는?
+	projectSeq
+Perso 가이드의 권장 폴링 간격은?
+	5초
+HTTP 429 상태 코드는 무엇을 의미합니까?
+	Too Many Requests
